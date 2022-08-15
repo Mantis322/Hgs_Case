@@ -1,14 +1,18 @@
 package TicketOffice;
 
 
+import vehicles.Cars;
 import vehicles.Vehicle;
 
 
+import java.util.ArrayList;
 import java.util.Date;
 
 public class Office {
     private Vehicle vehicle;
     static int totalEarn;
+
+    static ArrayList<Vehicle> passingVehicleList = new ArrayList<>();
 
     public static boolean payment(Vehicle vehicle){
         double payment;
@@ -20,7 +24,7 @@ public class Office {
 
 
         switch (vehicle.getType()){
-            case "otomobil":
+            case "car":
 
                 payment = vehicle.getBalance()-car_amount;
                 if (payment<0){
@@ -32,11 +36,12 @@ public class Office {
                     date = new Date();
                     vehicle.setDate(date);
                     totalEarn += car_amount;
+                    passingVehicleList.add(vehicle);
                 }
-                System.out.println("Ödeme işleminiz başarılı");
-                System.out.println("Yeni bakiyeniz: " + vehicle.getBalance());
+                //System.out.println("Ödeme işleminiz başarılı");
+                //System.out.println("Yeni bakiyeniz: " + vehicle.getBalance());
                 break;
-            case "minibüs":
+            case "minibus":
                     payment = vehicle.getBalance()-minibus_amount;
                 if (payment<0){
                     vehicle.setBalance(0);
@@ -47,12 +52,13 @@ public class Office {
                     date = new Date();
                     vehicle.setDate(date);
                     totalEarn += minibus_amount;
+                    passingVehicleList.add(vehicle);
                 }
-                System.out.println("Ödeme işleminiz başarılı");
-                System.out.println("Yeni bakiyeniz: " + vehicle.getBalance());
+                //System.out.println("Ödeme işleminiz başarılı");
+                //System.out.println("Yeni bakiyeniz: " + vehicle.getBalance());
                 break;
 
-            case "otobüs":
+            case "bus":
                 payment = vehicle.getBalance()-bus_amount;
                 if (payment<0){
                     vehicle.setBalance(0);
@@ -63,9 +69,10 @@ public class Office {
                     date = new Date();
                     vehicle.setDate(date);
                     totalEarn += bus_amount;
+                    passingVehicleList.add(vehicle);
                 }
-                System.out.println("Ödeme işleminiz başarılı");
-                System.out.println("Yeni bakiyeniz: " + vehicle.getBalance());
+                //System.out.println("Ödeme işleminiz başarılı");
+                //System.out.println("Yeni bakiyeniz: " + vehicle.getBalance());
                 break;
 
         }
@@ -79,5 +86,11 @@ public class Office {
 
     public static void setTotalEarn(int totalEarn) {
         Office.totalEarn = totalEarn;
+    }
+
+    public static void getPassingVehicleList(){
+        for (Vehicle obj : passingVehicleList){
+            System.out.println(obj.getHgs_number() + obj.getOwner() + obj.getDate());
+        }
     }
 }

@@ -13,6 +13,12 @@ public class Vehicle {
 
     private ArrayList<Date> passingTime = new ArrayList<>();
 
+    static ArrayList<Vehicle> vehicles = new ArrayList<>();
+
+    public Vehicle(){
+        addFirstVehicles();
+    }
+
     public Vehicle(int hgs_number, String owner, Date date, double balance, String type) {
         Hgs_number = hgs_number;
         this.owner = owner;
@@ -38,9 +44,7 @@ public class Vehicle {
     }
 
     public ArrayList getDate() {
-       for (Date d: passingTime){
-           System.out.println(d);
-       }
+
 
         return passingTime;
     }
@@ -64,5 +68,33 @@ public class Vehicle {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public static ArrayList<Vehicle> getList(){
+
+        return vehicles;
+    }
+
+    public static boolean add(int hgs_number,String owner,int balance, String type){
+        for (Vehicle obj : vehicles){
+            if (obj.getHgs_number() == hgs_number){
+                return false;
+            }
+        }
+        vehicles.add(new Vehicle(hgs_number,owner,new Date(),balance,type));
+
+        return true;
+    }
+
+    public void addFirstVehicles(){
+        vehicles.add(new Cars(1,"Test Owner",new Date(),100));
+        vehicles.add(new Minibus(23,"Test Minibus1",new Date(),50));
+        vehicles.add(new Bus(555,"Test Bus1",new Date(),10));
+    }
+
+    public static boolean delete(int hgs_number){
+
+
+        return true;
     }
 }

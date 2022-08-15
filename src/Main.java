@@ -16,6 +16,9 @@ public class Main {
         Office.payment(car1);
         Office.payment(minibus1);
         Office.payment(bus1);
+        Office.payment(bus1);
+
+        Office.getPassingVehicleList();
 
         System.out.println(Operator.getTotalEarn());
 
