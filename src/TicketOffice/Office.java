@@ -8,6 +8,7 @@ import java.util.Date;
 
 public class Office {
     private Vehicle vehicle;
+    static int totalEarn;
 
     public static boolean payment(Vehicle vehicle){
         double payment;
@@ -30,6 +31,7 @@ public class Office {
                     vehicle.setBalance(payment);
                     date = new Date();
                     vehicle.setDate(date);
+                    totalEarn += car_amount;
                 }
                 System.out.println("Ödeme işleminiz başarılı");
                 System.out.println("Yeni bakiyeniz: " + vehicle.getBalance());
@@ -44,6 +46,7 @@ public class Office {
                     vehicle.setBalance(payment);
                     date = new Date();
                     vehicle.setDate(date);
+                    totalEarn += minibus_amount;
                 }
                 System.out.println("Ödeme işleminiz başarılı");
                 System.out.println("Yeni bakiyeniz: " + vehicle.getBalance());
@@ -59,6 +62,7 @@ public class Office {
                     vehicle.setBalance(payment);
                     date = new Date();
                     vehicle.setDate(date);
+                    totalEarn += bus_amount;
                 }
                 System.out.println("Ödeme işleminiz başarılı");
                 System.out.println("Yeni bakiyeniz: " + vehicle.getBalance());
@@ -67,5 +71,13 @@ public class Office {
         }
 
         return true;
+    }
+
+    public static int getTotalEarn() {
+        return totalEarn;
+    }
+
+    public static void setTotalEarn(int totalEarn) {
+        Office.totalEarn = totalEarn;
     }
 }
