@@ -52,7 +52,7 @@ public class Office {
                 System.out.println("Yeni bakiyeniz: " + vehicle.getBalance());
                 break;
 
-            case "bus":
+            case "otobüs":
                 payment = vehicle.getBalance()-bus_amount;
                 if (payment<0){
                     vehicle.setBalance(0);
