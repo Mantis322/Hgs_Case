@@ -1,25 +1,26 @@
 package vehicles;
 
+import Helper.Helper;
+
+import java.io.*;
+import java.lang.invoke.VarHandle;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class Vehicle {
+public class Vehicle implements Serializable {
 
     private int Hgs_number;
     private String owner;
     private Date date;
-    private double balance;
+    private int balance;
     private String type;
 
     private ArrayList<Date> passingTime = new ArrayList<>();
 
     static ArrayList<Vehicle> vehicles = new ArrayList<>();
 
-    public Vehicle(){
-        addFirstVehicles();
-    }
 
-    public Vehicle(int hgs_number, String owner, Date date, double balance, String type) {
+    public Vehicle(int hgs_number, String owner, Date date, int balance, String type) {
         Hgs_number = hgs_number;
         this.owner = owner;
         this.date = date;
@@ -54,11 +55,11 @@ public class Vehicle {
 
     }
 
-    public double getBalance() {
+    public int getBalance() {
         return balance;
     }
 
-    public void setBalance(double balance) {
+    public void setBalance(int balance) {
         this.balance = balance;
     }
 
@@ -70,30 +71,65 @@ public class Vehicle {
         this.type = type;
     }
 
-    public static ArrayList<Vehicle> getList(){
+    public static ArrayList<Vehicle> getList() {
+        ArrayList<Vehicle> tempList = new ArrayList<>();
 
-        return vehicles;
+        try {
+            FileInputStream fileInput = new FileInputStream("TempDB/vehicleDB.txt");
+            ObjectInputStream input = new ObjectInputStream(fileInput);
+
+            ArrayList<Vehicle> vehicle = (ArrayList<Vehicle>) input.readObject();
+            while (vehicle != null) {
+                for (Vehicle obj : vehicle) {
+                    tempList.add(obj);
+                    vehicles.add(obj);
+                }
+
+                vehicle = (ArrayList<Vehicle>) input.readObject();
+            }
+            input.close();
+            fileInput.close();
+        } catch (IOException | ClassNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+        return tempList;
     }
 
-    public static boolean add(int hgs_number,String owner,int balance, String type){
-        for (Vehicle obj : vehicles){
-            if (obj.getHgs_number() == hgs_number){
+    public static boolean add(int hgs_number, String owner, int balance, String type) {
+        for (Vehicle obj : vehicles) {
+            if (obj.getHgs_number() == hgs_number) {
                 return false;
             }
         }
-        vehicles.add(new Vehicle(hgs_number,owner,new Date(),balance,type));
+
+        vehicles.add(new Vehicle(hgs_number, owner, new Date(), balance, type));
+        Helper.fileWriter(vehicles);
 
         return true;
     }
 
-    public void addFirstVehicles(){
-        vehicles.add(new Cars(1,"Test Owner",new Date(),100));
-        vehicles.add(new Minibus(23,"Test Minibus1",new Date(),50));
-        vehicles.add(new Bus(555,"Test Bus1",new Date(),10));
+
+    public static boolean delete(int hgs_number) {
+        vehicles.removeIf(t -> t.getHgs_number() == hgs_number);
+
+        Helper.clearFile();
+
+        Helper.fileWriter(vehicles);
+        return true;
     }
 
-    public static boolean delete(int hgs_number){
+    public static boolean Update(int hgs_number, String name, int balance,String type) {
 
+
+        for (Vehicle obj : vehicles) {
+            if (obj.getHgs_number() == hgs_number) {
+                vehicles.set(vehicles.indexOf(obj),new Vehicle(hgs_number,name,new Date(),balance,type));
+            }
+        }
+
+        Helper.clearFile();
+
+        Helper.fileWriter(vehicles);
 
         return true;
     }

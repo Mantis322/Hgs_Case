@@ -15,10 +15,10 @@ public class Office {
     static ArrayList<Vehicle> passingVehicleList = new ArrayList<>();
 
     public static boolean payment(Vehicle vehicle){
-        double payment;
-        double car_amount = 2;
-        double minibus_amount = 4;
-        double bus_amount = 6;
+        int payment;
+        int car_amount = 2;
+        int minibus_amount = 4;
+        int bus_amount = 6;
         Date date;
 
 
@@ -26,7 +26,7 @@ public class Office {
         switch (vehicle.getType()){
             case "car":
 
-                payment = vehicle.getBalance()-car_amount;
+                payment = (int) (vehicle.getBalance() - car_amount);
                 if (payment<0){
                     vehicle.setBalance(0);
                     System.out.println("Bakiyeniz yetersiz");
@@ -42,7 +42,7 @@ public class Office {
                 //System.out.println("Yeni bakiyeniz: " + vehicle.getBalance());
                 break;
             case "minibus":
-                    payment = vehicle.getBalance()-minibus_amount;
+                    payment = (int) (vehicle.getBalance()-minibus_amount);
                 if (payment<0){
                     vehicle.setBalance(0);
                     System.out.println("Bakiyeniz yetersiz");
@@ -59,7 +59,7 @@ public class Office {
                 break;
 
             case "bus":
-                payment = vehicle.getBalance()-bus_amount;
+                payment = (int) (vehicle.getBalance()-bus_amount);
                 if (payment<0){
                     vehicle.setBalance(0);
                     System.out.println("Bakiyeniz yetersiz");

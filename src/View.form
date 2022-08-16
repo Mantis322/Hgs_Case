@@ -147,9 +147,9 @@
                         </constraints>
                         <properties>
                           <model>
-                            <item value="otomobil"/>
-                            <item value="otobüs"/>
-                            <item value="minibüs"/>
+                            <item value="car"/>
+                            <item value="bus"/>
+                            <item value="minibus"/>
                           </model>
                         </properties>
                       </component>
