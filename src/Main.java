@@ -25,9 +25,14 @@ public class Main {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         try {
             FileWriter  writer = new FileWriter("TempDB/vehicle.json");
+            FileWriter  writer2 = new FileWriter("TempDB/passingVehiclelist.json");
             gson.toJson(vehicleArrayList,writer);
             writer.flush();
             writer.close();
+
+            gson.toJson(vehicleArrayList,writer2);
+            writer2.flush();
+            writer2.close();
 
 
         } catch (IOException e) {

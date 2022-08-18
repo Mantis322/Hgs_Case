@@ -1,6 +1,7 @@
 package vehicles;
 
 import Helper.Helper;
+import TicketOffice.Office;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -22,7 +23,7 @@ public class Vehicle implements Serializable {
 
     private ArrayList<Date> passingTimeList = new ArrayList<>();
 
-   public static ArrayList<Vehicle> vehicles = new ArrayList<>();
+  public static ArrayList<Vehicle> vehicles = new ArrayList<>();
 
 
 
@@ -113,7 +114,9 @@ public class Vehicle implements Serializable {
             }
 
             vehicles.add(new Vehicle(hgs_number, owner, new Date(), balance, type));
+            Office.passingVehicleList.add(new Vehicle(hgs_number, owner, new Date(), balance, type));
 
+            Office.writePassList();
             Helper.fileWrite();
 
         return true;

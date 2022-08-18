@@ -1,6 +1,8 @@
 package TicketOffice;
 
 import Helper.Helper;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import vehicles.Vehicle;
 
@@ -11,13 +13,15 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Date;
 
-import static vehicles.Vehicle.gson;
+
 
 public class Office {
     private Vehicle vehicle;
      public static int totalEarn;
 
-    static ArrayList<Vehicle> passingVehicleList = new ArrayList<>();
+   public static ArrayList<Vehicle> passingVehicleList = new ArrayList<>();
+
+    static  Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     public static boolean payment(Vehicle vehicle){
         int payment;
@@ -39,7 +43,7 @@ public class Office {
                     date = new Date();
                     vehicle.setPassingTimeList(date);
                     totalEarn += car_amount;
-                    passingVehicleList.add(vehicle);
+                    Office.passingVehicleList = Vehicle.vehicles;
                     Helper.fileWrite();
                     writeTotalEarn();
                     writePassList();
@@ -56,7 +60,7 @@ public class Office {
                     date = new Date();
                     vehicle.setPassingTimeList(date);
                     totalEarn += minibus_amount;
-                    passingVehicleList.add(vehicle);
+                    Office.passingVehicleList = Vehicle.vehicles;
                     Helper.fileWrite();
                     writeTotalEarn();
                     writePassList();
@@ -72,7 +76,7 @@ public class Office {
                     date = new Date();
                     vehicle.setPassingTimeList(date);
                     totalEarn += bus_amount;
-                    passingVehicleList.add(vehicle);
+                    Office.passingVehicleList = Vehicle.vehicles;
                     Helper.fileWrite();
                     writeTotalEarn();
                     writePassList();
@@ -100,8 +104,8 @@ public class Office {
 
     public static boolean writePassList(){
         try {
-            FileWriter writer = new FileWriter("TempDB/passingVehiclelist.json");
-            gson.toJson(passingVehicleList,writer);
+            FileWriter writer = new FileWriter("TempDB/passingList.json");
+            gson.toJson(Office.passingVehicleList,writer);
             writer.flush();
             writer.close();
         }catch (Exception e){
@@ -113,23 +117,23 @@ public class Office {
 
     public static ArrayList<Vehicle> getPassingList(){
         try {
-            FileReader reader = new FileReader("TempDB/passingVehiclelist.json");
+            FileReader reader = new FileReader("TempDB/passingList.json");
             Type type = new TypeToken<ArrayList<Vehicle>>(){}.getType();
-            passingVehicleList = gson.fromJson(reader,type);
+            Office.passingVehicleList = gson.fromJson(reader,type);
             reader.close();
 
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            System.out.println(e.getMessage());
         }
 
 
-        return passingVehicleList;
+        return Office.passingVehicleList;
     }
 
     public static boolean writeTotalEarn(){
         try {
             FileWriter writer = new FileWriter("TempDB/totalEarn.json");
-            gson.toJson(totalEarn,writer);
+            gson.toJson(Office.totalEarn,writer);
             writer.flush();
             writer.close();
         }catch (Exception e){

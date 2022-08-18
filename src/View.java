@@ -1,5 +1,6 @@
 import Helper.Helper;
 import Helper.Config;
+import Manager.Operator;
 import TicketOffice.Office;
 import vehicles.Vehicle;
 
@@ -8,8 +9,6 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.File;
-import java.io.IOException;
 import java.util.Date;
 
 public class View extends JFrame {
@@ -30,9 +29,13 @@ public class View extends JFrame {
     private JScrollPane scrl_vehicle_pass;
     private JTable tbl_vehicle_pass;
     private JPanel pnl_payment;
-    private JTextField ücretlerAraba2TLTextField;
     private JPanel pnl_vehicle_list;
     private JPanel pnl_passing_list;
+    private JButton btn_rmv_passing_list;
+    private JPanel pnl_rmv_pass_list;
+    private JPanel pnl_total_earn;
+    private JLabel fld_total_earn;
+    private JLabel fld_payment;
 
     private DefaultTableModel mdl_vehicle_list;
     private Object[] row_vehicle_list;
@@ -72,7 +75,8 @@ public class View extends JFrame {
                 JOptionPane.showMessageDialog(null,
                         "Geçiş Yapılmıştır. Yeni Bakiyeniz: " + Vehicle.getFetch(hgs_number).getBalance(),
                         "Başarılı", JOptionPane.INFORMATION_MESSAGE);
-
+                        loadPassingList();
+                        loadTotalEarn();
             } else {
                 Helper.messageBox("balance");
             }
@@ -127,6 +131,7 @@ public class View extends JFrame {
         tbl_vehicle_pass.getTableHeader().setReorderingAllowed(false);
 
         loadPassingList();
+        loadTotalEarn();
 
 
         // ## Passing List
@@ -221,6 +226,22 @@ public class View extends JFrame {
         {
             dispose();
         });
+        btn_rmv_passing_list.addActionListener(e -> {
+           if (Helper.comfrim()){
+               for (Vehicle obj : Vehicle.vehicles){
+                   obj.getPassingTimeList().clear();
+               }
+               Office.passingVehicleList = Vehicle.vehicles;
+               Office.totalEarn = 0;
+               Helper.fileWrite();
+               Office.writePassList();
+               Office.writeTotalEarn();
+               loadVehicle();
+               loadPassingList();
+               loadTotalEarn();
+           }
+
+        });
     }
 
     public static void main(String[] args) {
@@ -244,20 +265,25 @@ public class View extends JFrame {
     }
 
     public void loadPassingList() {
-        DefaultTableModel clear = (DefaultTableModel) tbl_vehicle_list.getModel();
+        DefaultTableModel clear = (DefaultTableModel) tbl_vehicle_pass.getModel();
         clear.setRowCount(0);
+
         String msg = " // HGS Numaralı Araç // ";
         String msg2 = " // Tarihinde Geçiş Yapmıştır.";
 
 
-        for (Vehicle obj : Office.getPassingList()) {
-            for (Date d : obj.getPassingTimeList()) {
-                row_passing_list[0] = obj.getHgs_number() + msg + d + " // " + msg2;
+            for (Vehicle obj : Office.getPassingList()) {
+                for (Date d : obj.getPassingTimeList()) {
+                    row_passing_list[0] = obj.getHgs_number() + msg + d + " // " + msg2;
+                    mdl_passing_list.addRow(row_passing_list);
+                }
 
             }
 
-        }
 
+    }
 
+    public void loadTotalEarn(){
+        fld_total_earn.setText("Toplam Kazanç : " + Operator.getTotalEarn());
     }
 }
