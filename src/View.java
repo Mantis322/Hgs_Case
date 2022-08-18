@@ -8,12 +8,15 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
+import java.io.IOException;
+import java.util.Date;
 
 public class View extends JFrame {
     private JPanel wrapper;
     private JPanel pnl_welcoming;
     private JButton btn_logut;
-    private JTabbedPane tabpnl_vehicle_list;
+    private JTabbedPane tabpnl_passing_list;
     private JScrollPane scrl_vehicle_list;
     private JTable tbl_vehicle_list;
     private JPanel pnl_vehicle_add;
@@ -26,6 +29,10 @@ public class View extends JFrame {
     private JButton btn_vehicle_rmv;
     private JScrollPane scrl_vehicle_pass;
     private JTable tbl_vehicle_pass;
+    private JPanel pnl_payment;
+    private JTextField ücretlerAraba2TLTextField;
+    private JPanel pnl_vehicle_list;
+    private JPanel pnl_passing_list;
 
     private DefaultTableModel mdl_vehicle_list;
     private Object[] row_vehicle_list;
@@ -33,6 +40,10 @@ public class View extends JFrame {
     private Vehicle vehicle;
 
     private JPopupMenu popupMenu;
+
+    private DefaultTableModel mdl_passing_list;
+
+    private Object[] row_passing_list;
 
 
     public View() {
@@ -55,22 +66,25 @@ public class View extends JFrame {
         popupMenu.add(passingList);
 
 
-
         passVehicle.addActionListener(e -> {
-            int hgs_number = Integer.parseInt(tbl_vehicle_list.getValueAt(tbl_vehicle_list.getSelectedRow(),0).toString());
-            if(Office.payment(Vehicle.getFetch(hgs_number))){
+            int hgs_number = Integer.parseInt(tbl_vehicle_list.getValueAt(tbl_vehicle_list.getSelectedRow(), 0).toString());
+            if (Office.payment(Vehicle.getFetch(hgs_number))) {
                 JOptionPane.showMessageDialog(null,
-                        "Geçiş Yapılmıştır. Yeni Bakiyeniz: "+Vehicle.getFetch(hgs_number).getBalance() ,
-                        "Başarılı",JOptionPane.INFORMATION_MESSAGE);
-            }else {
+                        "Geçiş Yapılmıştır. Yeni Bakiyeniz: " + Vehicle.getFetch(hgs_number).getBalance(),
+                        "Başarılı", JOptionPane.INFORMATION_MESSAGE);
+
+            } else {
                 Helper.messageBox("balance");
             }
 
+
             loadVehicle();
+
+
         });
 
         passingList.addActionListener(e -> {
-            int hgs_number = Integer.parseInt(tbl_vehicle_list.getValueAt(tbl_vehicle_list.getSelectedRow(),0).toString());
+            int hgs_number = Integer.parseInt(tbl_vehicle_list.getValueAt(tbl_vehicle_list.getSelectedRow(), 0).toString());
             PassingList pass = new PassingList(Vehicle.getFetch(hgs_number));
         });
 
@@ -91,12 +105,31 @@ public class View extends JFrame {
         tbl_vehicle_list.getColumnModel().getColumn(0).setMaxWidth(100);
         tbl_vehicle_list.getColumnModel().getColumn(0).setMinWidth(75);
 
-        tbl_vehicle_list.getColumnModel().getColumn(1).setMaxWidth(400);
-        tbl_vehicle_list.getColumnModel().getColumn(1).setMinWidth(375);
+        tbl_vehicle_list.getColumnModel().getColumn(1).setMaxWidth(350);
+        tbl_vehicle_list.getColumnModel().getColumn(1).setMinWidth(300);
 
         tbl_vehicle_list.getColumnModel().getColumn(2).setMaxWidth(100);
         tbl_vehicle_list.getColumnModel().getColumn(2).setMinWidth(75);
+        // Passing List
+        mdl_passing_list = new DefaultTableModel() {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                if (column == 0) return false;
 
+                return super.isCellEditable(row, column);
+            }
+        };
+        Object[] col_passing_list = {"Geçen Araçlar ve Zaman Listesi"};
+        row_passing_list = new Object[col_passing_list.length];
+
+        mdl_passing_list.setColumnIdentifiers(col_passing_list);
+        tbl_vehicle_pass.setModel(mdl_passing_list);
+        tbl_vehicle_pass.getTableHeader().setReorderingAllowed(false);
+
+        loadPassingList();
+
+
+        // ## Passing List
         loadVehicle();
 
         tbl_vehicle_list.getTableHeader().setReorderingAllowed(false);
@@ -133,64 +166,65 @@ public class View extends JFrame {
             public void mousePressed(MouseEvent e) {
                 Point point = e.getPoint();
                 int selectedRow = tbl_vehicle_list.rowAtPoint(point);
-                tbl_vehicle_list.setRowSelectionInterval(selectedRow,selectedRow);
+                tbl_vehicle_list.setRowSelectionInterval(selectedRow, selectedRow);
             }
         });
 
-    // ## Vehicle Table
+        // ## Vehicle Table
+
+
         btn_vehicle_add.addActionListener(e ->
 
-    {
-        if (Helper.isFieldEmpty(fld_hgs_number) || Helper.isFieldEmpty(fld_owner_name) || Helper.isFieldEmpty(fld_vehicle_balance)) {
-            Helper.messageBox("fill");
-        } else {
-            int hgs_number = Integer.parseInt(fld_hgs_number.getText());
-            String owner = fld_owner_name.getText();
-            int balance = Integer.parseInt(fld_vehicle_balance.getText());
-            String type = cmb_vehicle_type.getSelectedItem().toString();
-            if (Vehicle.add(hgs_number, owner, balance, type)) {
-                Helper.messageBox("done");
-                fld_hgs_number.setText(null);
-                fld_owner_name.setText(null);
-                fld_vehicle_balance.setText(null);
-                cmb_vehicle_type.setSelectedItem("car");
+        {
+            if (Helper.isFieldEmpty(fld_hgs_number) || Helper.isFieldEmpty(fld_owner_name) || Helper.isFieldEmpty(fld_vehicle_balance)) {
+                Helper.messageBox("fill");
             } else {
-                Helper.messageBox("already");
+                int hgs_number = Integer.parseInt(fld_hgs_number.getText());
+                String owner = fld_owner_name.getText();
+                int balance = Integer.parseInt(fld_vehicle_balance.getText());
+                String type = cmb_vehicle_type.getSelectedItem().toString();
+                if (Vehicle.add(hgs_number, owner, balance, type)) {
+                    Helper.messageBox("done");
+                    fld_hgs_number.setText(null);
+                    fld_owner_name.setText(null);
+                    fld_vehicle_balance.setText(null);
+                    cmb_vehicle_type.setSelectedItem("car");
+                } else {
+                    Helper.messageBox("already");
+                }
+
+
             }
-
-
-        }
-        loadVehicle();
-    });
+            loadVehicle();
+        });
         btn_vehicle_rmv.addActionListener(e ->
 
-    {
-        if (Helper.isFieldEmpty(fld_vehicle_remove)) {
-            Helper.messageBox("fill");
-        } else {
-            if (Helper.comfrim()) {
-                int hgs_number = Integer.parseInt(fld_vehicle_remove.getText().toString());
-                if (Vehicle.delete(hgs_number)) {
-                    Helper.messageBox("done");
-                    loadVehicle();
-                    fld_vehicle_remove.setText(null);
-                } else {
-                    Helper.messageBox("error");
+        {
+            if (Helper.isFieldEmpty(fld_vehicle_remove)) {
+                Helper.messageBox("fill");
+            } else {
+                if (Helper.comfrim()) {
+                    int hgs_number = Integer.parseInt(fld_vehicle_remove.getText().toString());
+                    if (Vehicle.delete(hgs_number)) {
+                        Helper.messageBox("done");
+                        loadVehicle();
+                        fld_vehicle_remove.setText(null);
+                    } else {
+                        Helper.messageBox("error");
+                    }
                 }
             }
-        }
 
-    });
+        });
         btn_logut.addActionListener(e ->
 
-    {
-        dispose();
-    });
-}
+        {
+            dispose();
+        });
+    }
 
     public static void main(String[] args) {
         View view = new View();
-
 
     }
 
@@ -202,10 +236,28 @@ public class View extends JFrame {
             i = 0;
             row_vehicle_list[i++] = obj.getHgs_number();
             row_vehicle_list[i++] = obj.getOwner();
-            row_vehicle_list[i++] = obj.getBalance();
+            row_vehicle_list[i++] = obj.getBalance() + " " + "TL";
             row_vehicle_list[i++] = obj.getType();
             mdl_vehicle_list.addRow(row_vehicle_list);
         }
+
+    }
+
+    public void loadPassingList() {
+        DefaultTableModel clear = (DefaultTableModel) tbl_vehicle_list.getModel();
+        clear.setRowCount(0);
+        String msg = " // HGS Numaralı Araç // ";
+        String msg2 = " // Tarihinde Geçiş Yapmıştır.";
+
+
+        for (Vehicle obj : Office.getPassingList()) {
+            for (Date d : obj.getPassingTimeList()) {
+                row_passing_list[0] = obj.getHgs_number() + msg + d + " // " + msg2;
+
+            }
+
+        }
+
 
     }
 }

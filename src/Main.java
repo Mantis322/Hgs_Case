@@ -12,9 +12,9 @@ import java.util.Date;
 
 public class Main {
     public static void main(String[] args) {
-        Vehicle v1 = new Vehicle(1,"Test Owner",new Date(),100,"car");
-        Vehicle v2 =new Vehicle(23,"Test Minibus1",new Date(),50,"minibus");
-        Vehicle v3 =new Vehicle(555,"Test Bus1",new Date(),10,"bus");
+        Vehicle v1 = new Vehicle(1,"Test Owner",new Date(),100,"otomobil");
+        Vehicle v2 =new Vehicle(23,"Test Minibus1",new Date(),50,"minibüs");
+        Vehicle v3 =new Vehicle(555,"Test Bus1",new Date(),10,"otobüs");
 
         ArrayList<Vehicle> vehicleArrayList = new ArrayList<>();
         vehicleArrayList.add(v1);
