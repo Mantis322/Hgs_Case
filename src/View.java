@@ -244,10 +244,7 @@ public class View extends JFrame {
         });
     }
 
-    public static void main(String[] args) {
-        View view = new View();
 
-    }
 
     public void loadVehicle() {
         DefaultTableModel clear = (DefaultTableModel) tbl_vehicle_list.getModel();
