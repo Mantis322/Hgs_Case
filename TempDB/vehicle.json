@@ -1,0 +1,29 @@
+[
+  {
+    "Hgs_number": 1,
+    "owner": "Test Owner",
+    "date": "Aug 18, 2022, 2:13:11 AM",
+    "balance": 100,
+    "type": "car",
+    "passingTimeList": []
+  },
+  {
+    "Hgs_number": 23,
+    "owner": "Test Minibus1",
+    "date": "Aug 18, 2022, 2:13:11 AM",
+    "balance": 42,
+    "type": "minibus",
+    "passingTimeList": [
+      "Aug 18, 2022, 2:13:25 AM",
+      "Aug 18, 2022, 2:19:31 AM"
+    ]
+  },
+  {
+    "Hgs_number": 555,
+    "owner": "Test Bus1",
+    "date": "Aug 18, 2022, 2:13:11 AM",
+    "balance": 10,
+    "type": "bus",
+    "passingTimeList": []
+  }
+]

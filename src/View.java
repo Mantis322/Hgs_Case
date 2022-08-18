@@ -1,14 +1,13 @@
 import Helper.Helper;
 import Helper.Config;
+import TicketOffice.Office;
 import vehicles.Vehicle;
 
 import javax.swing.*;
 import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 
 public class View extends JFrame {
     private JPanel wrapper;
@@ -25,13 +24,19 @@ public class View extends JFrame {
     private JButton btn_vehicle_add;
     private JTextField fld_vehicle_remove;
     private JButton btn_vehicle_rmv;
+    private JScrollPane scrl_vehicle_pass;
+    private JTable tbl_vehicle_pass;
 
     private DefaultTableModel mdl_vehicle_list;
     private Object[] row_vehicle_list;
 
     private Vehicle vehicle;
 
+    private JPopupMenu popupMenu;
+
+
     public View() {
+
         Helper.setLayout();
         add(wrapper);
         setSize(1000, 500);
@@ -43,6 +48,32 @@ public class View extends JFrame {
         setTitle(Config.PROJECT_NAME);
 
         //Vehicle Table
+        popupMenu = new JPopupMenu();
+        JMenuItem passVehicle = new JMenuItem("Geçiş Yap");
+        JMenuItem passingList = new JMenuItem("Geçişleri Listele");
+        popupMenu.add(passVehicle);
+        popupMenu.add(passingList);
+
+
+
+        passVehicle.addActionListener(e -> {
+            int hgs_number = Integer.parseInt(tbl_vehicle_list.getValueAt(tbl_vehicle_list.getSelectedRow(),0).toString());
+            if(Office.payment(Vehicle.getFetch(hgs_number))){
+                JOptionPane.showMessageDialog(null,
+                        "Geçiş Yapılmıştır. Yeni Bakiyeniz: "+Vehicle.getFetch(hgs_number).getBalance() ,
+                        "Başarılı",JOptionPane.INFORMATION_MESSAGE);
+            }else {
+                Helper.messageBox("balance");
+            }
+
+            loadVehicle();
+        });
+
+        passingList.addActionListener(e -> {
+            int hgs_number = Integer.parseInt(tbl_vehicle_list.getValueAt(tbl_vehicle_list.getSelectedRow(),0).toString());
+            PassingList pass = new PassingList(Vehicle.getFetch(hgs_number));
+        });
+
         mdl_vehicle_list = new DefaultTableModel() {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -56,7 +87,15 @@ public class View extends JFrame {
 
         mdl_vehicle_list.setColumnIdentifiers(col_vehicleList);
         tbl_vehicle_list.setModel(mdl_vehicle_list);
+        tbl_vehicle_list.setComponentPopupMenu(popupMenu);
+        tbl_vehicle_list.getColumnModel().getColumn(0).setMaxWidth(100);
+        tbl_vehicle_list.getColumnModel().getColumn(0).setMinWidth(75);
 
+        tbl_vehicle_list.getColumnModel().getColumn(1).setMaxWidth(400);
+        tbl_vehicle_list.getColumnModel().getColumn(1).setMinWidth(375);
+
+        tbl_vehicle_list.getColumnModel().getColumn(2).setMaxWidth(100);
+        tbl_vehicle_list.getColumnModel().getColumn(2).setMinWidth(75);
 
         loadVehicle();
 
@@ -77,17 +116,25 @@ public class View extends JFrame {
                 int hgs_number = Integer.parseInt(tbl_vehicle_list.getValueAt(tbl_vehicle_list.getSelectedRow(), 0).toString());
                 String name = tbl_vehicle_list.getValueAt(tbl_vehicle_list.getSelectedRow(), 1).toString();
                 int balance = Integer.parseInt(tbl_vehicle_list.getValueAt(tbl_vehicle_list.getSelectedRow(), 2).toString());
-                String type = tbl_vehicle_list.getValueAt(tbl_vehicle_list.getSelectedRow(), 3).toString();
 
-                if (Vehicle.Update(hgs_number, name, balance,type)) {
+
+                if (Vehicle.Update(hgs_number, name, balance)) {
                     Helper.messageBox("done");
-
                 }
 
                 loadVehicle();
             }
 
 
+        });
+
+        tbl_vehicle_list.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                Point point = e.getPoint();
+                int selectedRow = tbl_vehicle_list.rowAtPoint(point);
+                tbl_vehicle_list.setRowSelectionInterval(selectedRow,selectedRow);
+            }
         });
 
     // ## Vehicle Table

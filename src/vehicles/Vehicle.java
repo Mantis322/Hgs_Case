@@ -1,11 +1,16 @@
 package vehicles;
 
 import Helper.Helper;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.*;
-import java.lang.invoke.VarHandle;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Date;
+
+
 
 public class Vehicle implements Serializable {
 
@@ -15,9 +20,13 @@ public class Vehicle implements Serializable {
     private int balance;
     private String type;
 
-    private ArrayList<Date> passingTime = new ArrayList<>();
+    private ArrayList<Date> passingTimeList = new ArrayList<>();
 
-    static ArrayList<Vehicle> vehicles = new ArrayList<>();
+   public static ArrayList<Vehicle> vehicles = new ArrayList<>();
+
+
+
+   public static Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
 
     public Vehicle(int hgs_number, String owner, Date date, int balance, String type) {
@@ -44,14 +53,14 @@ public class Vehicle implements Serializable {
         this.owner = owner;
     }
 
-    public ArrayList getDate() {
+    public Date getDate() {
 
 
-        return passingTime;
+        return date;
     }
 
     public void setDate(Date date) {
-        passingTime.add(date);
+        this.date = date;
 
     }
 
@@ -71,39 +80,41 @@ public class Vehicle implements Serializable {
         this.type = type;
     }
 
+    public ArrayList<Date> getPassingTimeList() {
+        return passingTimeList;
+    }
+
+    public void setPassingTimeList(Date passingTime) {
+        passingTimeList.add(passingTime);
+    }
+
     public static ArrayList<Vehicle> getList() {
-        ArrayList<Vehicle> tempList = new ArrayList<>();
 
         try {
-            FileInputStream fileInput = new FileInputStream("TempDB/vehicleDB.txt");
-            ObjectInputStream input = new ObjectInputStream(fileInput);
+            FileReader reader = new FileReader("TempDB/vehicle.json");
+            Type type = new TypeToken<ArrayList<Vehicle>>(){}.getType();
+            vehicles = gson.fromJson(reader,type);
+            reader.close();
 
-            ArrayList<Vehicle> vehicle = (ArrayList<Vehicle>) input.readObject();
-            while (vehicle != null) {
-                for (Vehicle obj : vehicle) {
-                    tempList.add(obj);
-                    vehicles.add(obj);
-                }
-
-                vehicle = (ArrayList<Vehicle>) input.readObject();
-            }
-            input.close();
-            fileInput.close();
-        } catch (IOException | ClassNotFoundException e) {
-            System.out.println(e.getMessage());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        return tempList;
+
+
+        return vehicles;
     }
 
     public static boolean add(int hgs_number, String owner, int balance, String type) {
-        for (Vehicle obj : vehicles) {
-            if (obj.getHgs_number() == hgs_number) {
-                return false;
-            }
-        }
 
-        vehicles.add(new Vehicle(hgs_number, owner, new Date(), balance, type));
-        Helper.fileWriter(vehicles);
+            for (Vehicle obj : vehicles) {
+                if (obj.getHgs_number() == hgs_number) {
+                    return false;
+                }
+            }
+
+            vehicles.add(new Vehicle(hgs_number, owner, new Date(), balance, type));
+
+            Helper.fileWrite();
 
         return true;
     }
@@ -112,25 +123,36 @@ public class Vehicle implements Serializable {
     public static boolean delete(int hgs_number) {
         vehicles.removeIf(t -> t.getHgs_number() == hgs_number);
 
-        Helper.clearFile();
+        Helper.fileWrite();
 
-        Helper.fileWriter(vehicles);
+
         return true;
     }
 
-    public static boolean Update(int hgs_number, String name, int balance,String type) {
+    public static boolean Update(int hgs_number, String name, int balance) {
 
 
         for (Vehicle obj : vehicles) {
             if (obj.getHgs_number() == hgs_number) {
-                vehicles.set(vehicles.indexOf(obj),new Vehicle(hgs_number,name,new Date(),balance,type));
+                obj.setOwner(name);
+                obj.setBalance(balance);
             }
         }
 
-        Helper.clearFile();
-
-        Helper.fileWriter(vehicles);
+        Helper.fileWrite();
 
         return true;
+    }
+
+    public static Vehicle getFetch(int hgs_number){
+        Vehicle vc = null;
+        for (Vehicle obj : vehicles){
+            if (obj.getHgs_number() == hgs_number){
+                vc = obj;
+            }
+        }
+
+
+        return vc;
     }
 }

@@ -1,3 +1,6 @@
+import Helper.Helper;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import vehicles.Vehicle;
 
 import javax.sound.sampled.AudioFormat;
@@ -13,18 +16,20 @@ public class Main {
         Vehicle v2 =new Vehicle(23,"Test Minibus1",new Date(),50,"minibus");
         Vehicle v3 =new Vehicle(555,"Test Bus1",new Date(),10,"bus");
 
-        ArrayList<Vehicle> wqe = new ArrayList<>();
-        wqe.add(v1);
-        wqe.add(v2);
-        wqe.add(v3);
+        ArrayList<Vehicle> vehicleArrayList = new ArrayList<>();
+        vehicleArrayList.add(v1);
+        vehicleArrayList.add(v2);
+        vehicleArrayList.add(v3);
 
+
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
         try {
-           FileOutputStream file = new FileOutputStream("TempDb/vehicleDB.txt");
-           ObjectOutputStream output = new ObjectOutputStream(file);
-           output.writeObject(wqe);
+            FileWriter  writer = new FileWriter("TempDB/vehicle.json");
+            gson.toJson(vehicleArrayList,writer);
+            writer.flush();
+            writer.close();
 
 
-           output.close();
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }

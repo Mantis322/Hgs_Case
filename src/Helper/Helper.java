@@ -2,13 +2,11 @@ package Helper;
 
 
 import vehicles.Vehicle;
-
 import javax.swing.*;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.util.ArrayList;
+
+import static vehicles.Vehicle.gson;
+
 
 public class Helper {
 
@@ -29,19 +27,6 @@ public class Helper {
         return field.getText().trim().isEmpty();
     }
 
-    public static boolean fileWriter(ArrayList vehicleList){
-        try {
-            FileOutputStream file = new FileOutputStream("TempDb/vehicleDB.txt");
-            ObjectOutputStream output = new ObjectOutputStream(file);
-            output.writeObject(vehicleList);
-
-            output.close();
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
-        return true;
-    }
-
 
 
     public static void messageBox(String message){
@@ -60,6 +45,10 @@ public class Helper {
             case "already":
                 msg = "Bu HGS numarası zaten alınmış";
                 title = "Hata";
+            case "balance":
+                msg = "Yetersiz Bakiye";
+                title = "Hata";
+                break;
             default:
                 msg = "Bir hata meydana geldi";
                 title = "Hata";
@@ -80,11 +69,16 @@ public class Helper {
         UIManager.put("OptionPane.okButtonText", "Tamam");
     }
 
-    public static void clearFile(){
-        try {
-            new FileWriter("TempDB/vehicleDB.txt", false).close();
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
+    public static boolean fileWrite(){
+       try {
+           FileWriter  writer = new FileWriter("TempDB/vehicle.json");
+           gson.toJson(Vehicle.vehicles,writer);
+           writer.flush();
+           writer.close();
+       }catch (Exception e){
+           System.out.println(e.getMessage());
+           return false;
+       }
+        return true;
     }
 }

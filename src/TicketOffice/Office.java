@@ -1,6 +1,7 @@
 package TicketOffice;
 
 
+import Helper.Helper;
 import vehicles.Cars;
 import vehicles.Vehicle;
 
@@ -29,53 +30,52 @@ public class Office {
                 payment = (int) (vehicle.getBalance() - car_amount);
                 if (payment<0){
                     vehicle.setBalance(0);
-                    System.out.println("Bakiyeniz yetersiz");
+                    Helper.fileWrite();
                     return false;
                 }else {
                     vehicle.setBalance(payment);
                     date = new Date();
-                    vehicle.setDate(date);
+                    vehicle.setPassingTimeList(date);
                     totalEarn += car_amount;
                     passingVehicleList.add(vehicle);
+                    Helper.fileWrite();
                 }
-                //System.out.println("Ödeme işleminiz başarılı");
-                //System.out.println("Yeni bakiyeniz: " + vehicle.getBalance());
+
                 break;
             case "minibus":
                     payment = (int) (vehicle.getBalance()-minibus_amount);
                 if (payment<0){
                     vehicle.setBalance(0);
-                    System.out.println("Bakiyeniz yetersiz");
+                    Helper.fileWrite();
                     return false;
                 }else {
                     vehicle.setBalance(payment);
                     date = new Date();
-                    vehicle.setDate(date);
+                    vehicle.setPassingTimeList(date);
                     totalEarn += minibus_amount;
                     passingVehicleList.add(vehicle);
+                    Helper.fileWrite();
                 }
-                //System.out.println("Ödeme işleminiz başarılı");
-                //System.out.println("Yeni bakiyeniz: " + vehicle.getBalance());
                 break;
 
             case "bus":
                 payment = (int) (vehicle.getBalance()-bus_amount);
                 if (payment<0){
                     vehicle.setBalance(0);
-                    System.out.println("Bakiyeniz yetersiz");
+                    Helper.fileWrite();
                     return false;
                 }else {
                     vehicle.setBalance(payment);
                     date = new Date();
-                    vehicle.setDate(date);
+                    vehicle.setPassingTimeList(date);
                     totalEarn += bus_amount;
                     passingVehicleList.add(vehicle);
+                    Helper.fileWrite();
                 }
-                //System.out.println("Ödeme işleminiz başarılı");
-                //System.out.println("Yeni bakiyeniz: " + vehicle.getBalance());
                 break;
 
         }
+
 
         return true;
     }
@@ -88,9 +88,8 @@ public class Office {
         Office.totalEarn = totalEarn;
     }
 
-    public static void getPassingVehicleList(){
-        for (Vehicle obj : passingVehicleList){
-            System.out.println(obj.getHgs_number() + obj.getOwner() + obj.getDate());
+    public static ArrayList<Vehicle> getPassingVehicleList(){
+        return passingVehicleList;
         }
-    }
+
 }
