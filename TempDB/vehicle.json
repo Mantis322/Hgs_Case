@@ -3,9 +3,11 @@
     "Hgs_number": 1,
     "owner": "Test Owner",
     "date": "Aug 18, 2022, 4:57:35 AM",
-    "balance": 84,
+    "balance": 82,
     "type": "otomobil",
-    "passingTimeList": []
+    "passingTimeList": [
+      "Aug 18, 2022, 4:50:42 PM"
+    ]
   },
   {
     "Hgs_number": 23,
@@ -21,7 +23,7 @@
     "Hgs_number": 555,
     "owner": "Test Bus1",
     "date": "Aug 18, 2022, 4:57:35 AM",
-    "balance": 4,
+    "balance": 5,
     "type": "otobüs",
     "passingTimeList": []
   }

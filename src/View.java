@@ -114,27 +114,7 @@ public class View extends JFrame {
 
         tbl_vehicle_list.getColumnModel().getColumn(2).setMaxWidth(100);
         tbl_vehicle_list.getColumnModel().getColumn(2).setMinWidth(75);
-        // Passing List
-        mdl_passing_list = new DefaultTableModel() {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                if (column == 0) return false;
 
-                return super.isCellEditable(row, column);
-            }
-        };
-        Object[] col_passing_list = {"Geçen Araçlar ve Zaman Listesi"};
-        row_passing_list = new Object[col_passing_list.length];
-
-        mdl_passing_list.setColumnIdentifiers(col_passing_list);
-        tbl_vehicle_pass.setModel(mdl_passing_list);
-        tbl_vehicle_pass.getTableHeader().setReorderingAllowed(false);
-
-        loadPassingList();
-        loadTotalEarn();
-
-
-        // ## Passing List
         loadVehicle();
 
         tbl_vehicle_list.getTableHeader().setReorderingAllowed(false);
@@ -177,6 +157,47 @@ public class View extends JFrame {
 
         // ## Vehicle Table
 
+        // Passing List
+        mdl_passing_list = new DefaultTableModel() {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                if (column == 0) return false;
+
+                return super.isCellEditable(row, column);
+            }
+        };
+        Object[] col_passing_list = {"Geçen Araçlar ve Zaman Listesi"};
+        row_passing_list = new Object[col_passing_list.length];
+
+        mdl_passing_list.setColumnIdentifiers(col_passing_list);
+        tbl_vehicle_pass.setModel(mdl_passing_list);
+        tbl_vehicle_pass.getTableHeader().setReorderingAllowed(false);
+
+        loadPassingList();
+        loadTotalEarn();
+
+
+        // ## Passing List
+
+        fld_hgs_number.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+               char c = e.getKeyChar();
+                if ( ((c < '0') || (c > '9')) && (c != KeyEvent.VK_BACK_SPACE)) {
+                    e.consume();  // if it's not a number, ignore the event
+                }
+            }
+        });
+
+        fld_vehicle_balance.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                char c = e.getKeyChar();
+                if ( ((c < '0') || (c > '9')) && (c != KeyEvent.VK_BACK_SPACE)) {
+                    e.consume();  // if it's not a number, ignore the event
+                }
+            }
+        });
 
         btn_vehicle_add.addActionListener(e ->
 
@@ -254,7 +275,7 @@ public class View extends JFrame {
             i = 0;
             row_vehicle_list[i++] = obj.getHgs_number();
             row_vehicle_list[i++] = obj.getOwner();
-            row_vehicle_list[i++] = obj.getBalance() + " " + "TL";
+            row_vehicle_list[i++] = obj.getBalance() ;
             row_vehicle_list[i++] = obj.getType();
             mdl_vehicle_list.addRow(row_vehicle_list);
         }
